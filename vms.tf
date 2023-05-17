@@ -23,7 +23,7 @@ resource "azurerm_network_interface" "test" {
    resource_group_name  = azurerm_resource_group.test.name
    storage_account_type = "Standard_LRS"
    create_option        = "Empty"
-   disk_size_gb         = "16"
+   disk_size_gb         = "20"
  }
 
  resource "azurerm_availability_set" "avset" {
@@ -62,23 +62,6 @@ resource "azurerm_network_interface" "test" {
      caching           = "ReadWrite"
      create_option     = "FromImage"
      managed_disk_type = "Standard_LRS"
-   }
-
-   # Optional data disks
-   storage_data_disk {
-     name              = "datadisk_new_${count.index}"
-     managed_disk_type = "Standard_LRS"
-     create_option     = "Empty"
-     lun               = 0
-     disk_size_gb      = "20"
-   }
-
-   storage_data_disk {
-     name            = element(azurerm_managed_disk.test.*.name, count.index)
-     managed_disk_id = element(azurerm_managed_disk.test.*.id, count.index)
-     create_option   = "Attach"
-     lun             = 1
-     disk_size_gb    = element(azurerm_managed_disk.test.*.disk_size_gb, count.index)
    }
 
    os_profile {
